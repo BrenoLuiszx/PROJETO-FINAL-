@@ -1,0 +1,76 @@
+/* HEADER STYLES */
+body:not(.courses-page) {
+  padding-top: 70px;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  z-index: 1000;
+  padding: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+header .começo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo .img {
+  height: 60px;
+  width: auto;
+  border-radius: 8px;
+}
+
+.menu-desktop ul {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-desktop a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.menu-desktop a:hover {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header .começo {
+    padding: 12px 20px;
+  }
+  
+  .menu-desktop ul {
+    gap: 16px;
+  }
+  
+  .menu-desktop a {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
