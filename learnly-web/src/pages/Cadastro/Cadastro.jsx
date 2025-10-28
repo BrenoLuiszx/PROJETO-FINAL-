@@ -56,7 +56,7 @@ const Cadastro = () => {
   };
 
   return (
-    <div>
+    <div className="cadastro-page">
       <Header />
       <div className="cadastro-container">
         <div className="cadastro-header">

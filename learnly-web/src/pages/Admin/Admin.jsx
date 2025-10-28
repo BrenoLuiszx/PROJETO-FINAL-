@@ -344,9 +344,7 @@ const Admin = () => {
                     Deletar
                   </button>
                   <a 
-                    href={curso.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                    href={`/curso/${curso.id}`}
                     className="btn-view"
                   >
                     Ver Curso

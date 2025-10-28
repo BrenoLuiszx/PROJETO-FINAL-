@@ -9,6 +9,7 @@ export const cursosAPI = {
   buscarPorId: (id) => api.get(`/cursos/${id}`),
   buscarPorCategoria: (categoria) => api.get(`/cursos/categoria/${categoria}`),
   buscarPorTitulo: (titulo) => api.get(`/cursos/buscar?titulo=${titulo}`),
+  buscarPorId: (id) => api.get(`/cursos/${id}`),
   criar: (curso) => api.post('/cursos', curso),
   atualizar: (id, curso) => api.put(`/cursos/${id}`, curso),
   deletar: (id) => api.delete(`/cursos/${id}`)

@@ -1,19 +1,19 @@
 /* LEARNLY - BIGTECH PROFESSIONAL DESIGN SYSTEM - CADASTRO */
 
 /* Container */
-.cadastro-container {
+.cadastro-page .cadastro-container {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0A0A0B 0%, #1C1C1E 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 2rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
-.cadastro-container::before {
+.cadastro-page .cadastro-container::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -26,7 +26,7 @@
 }
 
 /* Header */
-.cadastro-header {
+.cadastro-page .cadastro-header {
   position: relative;
   z-index: 1;
   text-align: center;
@@ -40,7 +40,7 @@
   letter-spacing: -0.025em;
   line-height: 1.1;
   margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #F2F2F7 0%, #FFD700 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -49,76 +49,83 @@
 .cadastro-header p {
   font-size: 1.125rem;
   font-weight: 400;
-  color: #AEAEB2;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.7;
 }
 
 /* Progress Bar */
-.progress-bar {
+.cadastro-page .progress-bar {
   position: relative;
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 3rem;
-  position: relative;
+  margin-bottom: 5rem;
+  padding: 0 1rem;
+  overflow: visible;
 }
 
-.progress-bar::before {
+.cadastro-page .progress-bar::before {
   content: '';
   position: absolute;
   top: 20px;
-  left: 0;
-  right: 0;
+  left: 15%;
+  right: 15%;
   height: 2px;
-  background: #2C2C2E;
+  background: var(--bg-tertiary);
   z-index: 1;
 }
 
-.progress-step {
+.cadastro-page .progress-step {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 2;
   flex: 1;
+  min-width: 120px;
+  max-width: 150px;
 }
 
-.progress-step span {
+.cadastro-page .progress-step span {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #1C1C1E;
-  border: 2px solid #3A3A3C;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #8E8E93;
+  color: var(--text-muted);
   margin-bottom: 0.5rem;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
-.progress-step.active span {
-  background: #FFD700;
-  border-color: #FFD700;
-  color: #0A0A0B;
+.cadastro-page .progress-step.active span {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--bg-primary);
   box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
 }
 
-.progress-step label {
+.cadastro-page .progress-step label {
   font-size: 0.875rem;
-  color: #8E8E93;
+  color: var(--text-muted);
   text-align: center;
   font-weight: 500;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
 }
 
-.progress-step.active label {
-  color: #F2F2F7;
+.cadastro-page .progress-step.active label {
+  color: var(--text-primary);
 }
 
 /* Messages */
-.mensagem {
+.cadastro-page .mensagem {
   position: relative;
   z-index: 1;
   padding: 1rem;
@@ -141,7 +148,7 @@
 }
 
 /* Form */
-.cadastro-form {
+.cadastro-page .cadastro-form {
   position: relative;
   z-index: 1;
   background: rgba(255, 255, 255, 0.05);
@@ -155,7 +162,7 @@
 .form-step h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #F2F2F7;
+  color: var(--text-primary);
   margin: 0 0 1.5rem;
   letter-spacing: -0.025em;
 }
@@ -174,36 +181,47 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #F2F2F7;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.cadastro-page .form-group input,
+.cadastro-page .form-group select,
+.cadastro-page .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid #3A3A3C;
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
   font-size: 1rem;
-  background: #1C1C1E;
-  color: #F2F2F7;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
+}
+
+.cadastro-page .form-group select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23F2F2F7" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: right 1rem center !important;
+  background-size: 12px !important;
+  cursor: pointer !important;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #FFD700;
-  box-shadow: 0 0 0 1px #FFD700, 0 4px 16px rgba(255, 215, 0, 0.2);
-  background: #2C2C2E;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px var(--accent-color), 0 4px 16px rgba(255, 215, 0, 0.2);
+  background: var(--bg-tertiary);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #8E8E93;
+  color: var(--text-muted);
 }
 
 .form-group textarea {
@@ -218,7 +236,7 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #2C2C2E;
+  border-top: 1px solid var(--border-color);
 }
 
 .btn-prev,
@@ -237,35 +255,35 @@
 }
 
 .btn-prev {
-  background: #2C2C2E;
-  color: #AEAEB2;
-  border: 1px solid #3A3A3C;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .btn-prev:hover {
-  background: #3A3A3C;
-  color: #F2F2F7;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .btn-next,
 .btn-submit {
-  background: #FFD700;
-  color: #0A0A0B;
+  background: var(--accent-color);
+  color: var(--bg-primary);
   margin-left: auto;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-next:hover,
 .btn-submit:hover {
   background: #FFDC00;
   transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-next:disabled,
 .btn-submit:disabled {
-  background: #2C2C2E;
-  color: #8E8E93;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;

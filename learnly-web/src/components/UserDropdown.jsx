@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import SettingsModal from './SettingsModal';
 import '../styles/userDropdown-bigtech.css';
 
 const UserDropdown = () => {
   const { usuario, logout, syncUserData, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  
-
-  
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -28,7 +27,6 @@ const UserDropdown = () => {
                 src={usuario.foto} 
                 alt={usuario.nome} 
                 className="avatar-img"
-
               />
             ) : (
               <div className="avatar-placeholder">
@@ -48,13 +46,15 @@ const UserDropdown = () => {
       {isOpen && (
         <div className="dropdown-menu">
           {isAuthenticated ? (
-            // Menu do usuário logado
             <div className="user-menu">
               <div className="user-info">
                 <div className="user-name">{usuario.nome}</div>
                 <div className="user-email">{usuario.email}</div>
               </div>
               <div className="menu-divider"></div>
+              <button className="menu-item" onClick={() => { setShowSettings(true); setIsOpen(false); }}>
+                Configurações
+              </button>
               {usuario.role === 'admin' && (
                 <Link to="/admin" className="menu-item" onClick={() => setIsOpen(false)}>
                   Administração
@@ -68,7 +68,6 @@ const UserDropdown = () => {
               </button>
             </div>
           ) : (
-            // Menu simples com links
             <div className="simple-menu">
               <Link to="/login" className="menu-item" onClick={() => setIsOpen(false)}>
                 Login
@@ -81,13 +80,17 @@ const UserDropdown = () => {
         </div>
       )}
 
-      {/* Overlay para fechar o dropdown */}
       {isOpen && (
         <div 
           className="dropdown-overlay" 
           onClick={() => setIsOpen(false)}
         ></div>
       )}
+      
+      <SettingsModal 
+        isOpen={showSettings} 
+        onClose={() => setShowSettings(false)} 
+      />
     </div>
   );
 };

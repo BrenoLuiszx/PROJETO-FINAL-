@@ -1,6 +1,7 @@
 package com.learnly.api.model.service;
 
 import com.learnly.api.dto.CursoDTO;
+import com.learnly.api.dto.CursoDetalhadoDTO;
 import com.learnly.api.model.entity.Categoria;
 import com.learnly.api.model.entity.Curso;
 import com.learnly.api.model.entity.Instrutor;
@@ -100,6 +101,18 @@ public class CursoService {
                 .collect(Collectors.toList());
     }
 
+    public CursoDTO buscarPorId(Long id) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+        return convertToDTO(curso);
+    }
+
+    public CursoDetalhadoDTO buscarDetalhadoPorId(Long id) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+        return convertToDetalhadoDTO(curso);
+    }
+
     private CursoDTO convertToDTO(Curso curso) {
         return new CursoDTO(
             curso.getId(),
@@ -109,6 +122,21 @@ public class CursoService {
             curso.getCategoria().getNome(),
             curso.getInstrutor().getNome(),
             curso.getDuracao()
+        );
+    }
+
+    private CursoDetalhadoDTO convertToDetalhadoDTO(Curso curso) {
+        return new CursoDetalhadoDTO(
+            curso.getId(),
+            curso.getTitulo(),
+            curso.getDescricao(),
+            curso.getUrl(),
+            curso.getCategoria().getNome(),
+            curso.getInstrutor().getNome(),
+            curso.getInstrutor().getFoto(),
+            curso.getInstrutor().getBio(),
+            curso.getDuracao(),
+            "Online"
         );
     }
 }

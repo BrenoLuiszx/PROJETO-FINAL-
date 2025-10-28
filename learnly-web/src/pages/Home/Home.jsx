@@ -10,6 +10,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [visibleSections, setVisibleSections] = useState(new Set());
   const [currentInstructor, setCurrentInstructor] = useState(0);
+  const [hoveredCourse, setHoveredCourse] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState(null);
+  const [isMouseOverCard, setIsMouseOverCard] = useState(false);
+  const [isMouseOverModal, setIsMouseOverModal] = useState(false);
   const sectionsRef = useRef([]);
 
   const instructors = [
@@ -103,10 +108,57 @@ const Home = () => {
     setVisibleSections(prev => new Set([...prev, 'hero']));
   }, []);
 
+  const handleMouseEnter = (curso) => {
+    setIsMouseOverCard(true);
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+    }
+    const timeout = setTimeout(() => {
+      setHoveredCourse(curso);
+      setShowModal(true);
+    }, 800);
+    setHoverTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    setIsMouseOverCard(false);
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setTimeout(() => {
+      if (!isMouseOverModal) {
+        setShowModal(false);
+        setHoveredCourse(null);
+      }
+    }, 100);
+  };
+
+  const handleModalEnter = () => {
+    setIsMouseOverModal(true);
+  };
+
+  const handleModalLeave = () => {
+    setIsMouseOverModal(false);
+    setTimeout(() => {
+      if (!isMouseOverCard) {
+        setShowModal(false);
+        setHoveredCourse(null);
+      }
+    }, 100);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setHoveredCourse(null);
+    setIsMouseOverCard(false);
+    setIsMouseOverModal(false);
+  };
+
 
 
   return (
-    <div className="home-container">
+    <div className="home-container home-page">
       <Header />
 
       {loading && (
@@ -264,6 +316,8 @@ const Home = () => {
                 key={curso.id} 
                 className="home-course-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
+                onMouseEnter={() => handleMouseEnter(curso)}
+                onMouseLeave={handleMouseLeave}
               >
                 <div className="home-course-header">
                   <div className="home-course-category">{curso.categoria}</div>
@@ -278,7 +332,10 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="home-course-footer">
-                  <button className="home-course-btn">
+                  <button 
+                    className="home-course-btn"
+                    onClick={() => navigate(`/curso/${curso.id}`)}
+                  >
                     Começar curso
                   </button>
                 </div>
@@ -292,6 +349,87 @@ const Home = () => {
             </button>
           </div>
         </div>
+        
+        {showModal && hoveredCourse && (
+          <div className="course-preview-modal">
+            <div className="preview-backdrop" onClick={handleCloseModal}></div>
+            <div 
+              className="course-preview-card"
+              onMouseEnter={handleModalEnter}
+              onMouseLeave={handleModalLeave}
+            >
+              <div className="preview-header">
+                <div className="preview-category">{hoveredCourse.categoria}</div>
+                <button className="preview-close" onClick={handleCloseModal}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="preview-content">
+                <div className="preview-visual">
+                  <div className="preview-thumbnail">
+                    <div className="preview-play-btn" onClick={() => window.open(hoveredCourse.url, '_blank')}>
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                    <div className="preview-duration">
+                      {Math.floor(hoveredCourse.duracao / 60)}h {hoveredCourse.duracao % 60}min
+                    </div>
+                    <div className="preview-overlay-gradient"></div>
+                  </div>
+                </div>
+                
+                <div className="preview-info">
+                  <h3>{hoveredCourse.titulo}</h3>
+                  <p className="preview-description">{hoveredCourse.descricao}</p>
+                  
+                  <div className="preview-meta">
+                    <div className="meta-item">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                      </svg>
+                      <span>{hoveredCourse.instrutor}</span>
+                    </div>
+                    <div className="meta-item">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                      <span>4.8 (2.1k avaliações)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="preview-highlights">
+                    <h4>O que você vai aprender:</h4>
+                    <ul>
+                      <li>Fundamentos sólidos da tecnologia</li>
+                      <li>Projetos práticos e aplicações reais</li>
+                      <li>Melhores práticas da indústria</li>
+                      <li>Preparação para o mercado de trabalho</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="preview-actions">
+                    <button 
+                      className="btn-preview-primary"
+                      onClick={() => navigate(`/curso/${hoveredCourse.id}`)}
+                    >
+                      Ver curso completo
+                    </button>
+                    <button 
+                      className="btn-preview-secondary"
+                      onClick={() => window.open(hoveredCourse.url, '_blank')}
+                    >
+                      Assistir agora
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       <section 

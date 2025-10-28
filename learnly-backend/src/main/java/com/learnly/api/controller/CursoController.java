@@ -1,6 +1,7 @@
     package com.learnly.api.controller;
 
     import com.learnly.api.dto.CursoDTO;
+import com.learnly.api.dto.CursoDetalhadoDTO;
 import com.learnly.api.model.service.CursoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,15 @@ import org.springframework.beans.factory.annotation.Autowired;
         public ResponseEntity<List<CursoDTO>> buscarPorTitulo(@RequestParam(required = false) String titulo) {
             List<CursoDTO> cursos = cursoService.buscarPorTitulo(titulo);
             return ResponseEntity.ok(cursos);
+        }
+
+        @GetMapping("/{id}")
+        public ResponseEntity<CursoDetalhadoDTO> buscarPorId(@PathVariable Long id) {
+            try {
+                CursoDetalhadoDTO curso = cursoService.buscarDetalhadoPorId(id);
+                return ResponseEntity.ok(curso);
+            } catch (RuntimeException e) {
+                return ResponseEntity.notFound().build();
+            }
         }
     }

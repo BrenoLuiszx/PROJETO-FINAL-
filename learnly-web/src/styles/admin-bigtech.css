@@ -385,7 +385,7 @@
   align-items: center;
   padding: 0.25rem 0.75rem;
   background: #ffd700;
-  color: #0a0a0b;
+  color: #000000 !important;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -469,14 +469,14 @@
 }
 
 .btn-view {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ccc;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffd700;
+  color: #000000 !important;
+  border: 1px solid #ffd700;
 }
 
 .btn-view:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: #ffdc00;
+  color: #000000 !important;
 }
 
 /* User Cards */

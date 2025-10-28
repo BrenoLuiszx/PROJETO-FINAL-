@@ -10,10 +10,10 @@ header {
   right: 0;
   background: rgba(15, 15, 15, 0.95);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  border-bottom: 1px solid var(--border-color);
   z-index: 1000;
   padding: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 header .começo {
@@ -45,7 +45,7 @@ header .começo {
 }
 
 .menu-desktop a {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
@@ -55,7 +55,7 @@ header .começo {
 }
 
 .menu-desktop a:hover {
-  color: #FFD700;
+  color: var(--accent-color);
   background: rgba(255, 215, 0, 0.1);
 }
 
