@@ -55,6 +55,9 @@ const UserDropdown = () => {
               <button className="menu-item" onClick={() => { setShowSettings(true); setIsOpen(false); }}>
                 Configurações
               </button>
+              <Link to="/perfil" className="menu-item" onClick={() => setIsOpen(false)}>
+                Meu Perfil
+              </Link>
               {usuario.role === 'admin' && (
                 <Link to="/admin" className="menu-item" onClick={() => setIsOpen(false)}>
                   Administração

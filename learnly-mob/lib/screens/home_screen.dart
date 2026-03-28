@@ -192,10 +192,10 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        LinearProgressIndicator(
+                        const LinearProgressIndicator(
                           value: 0.75,
-                          backgroundColor: const Color(0xFF27272A),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFACC15)),
+                          backgroundColor: Color(0xFF27272A),
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFACC15)),
                           minHeight: 8,
                         ),
                       ],

@@ -6,19 +6,21 @@ public class UsuarioDTO {
     private String email;
     private String foto;
     private String role;
+    private String statusSolicitacao;
+    private String justificativaColaborador;
 
-    // Construtores
     public UsuarioDTO() {}
 
-    public UsuarioDTO(Long id, String nome, String email, String foto, String role) {
+    public UsuarioDTO(Long id, String nome, String email, String foto, String role, String statusSolicitacao, String justificativaColaborador) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.foto = foto;
         this.role = role;
+        this.statusSolicitacao = statusSolicitacao;
+        this.justificativaColaborador = justificativaColaborador;
     }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -33,4 +35,10 @@ public class UsuarioDTO {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getStatusSolicitacao() { return statusSolicitacao; }
+    public void setStatusSolicitacao(String statusSolicitacao) { this.statusSolicitacao = statusSolicitacao; }
+
+    public String getJustificativaColaborador() { return justificativaColaborador; }
+    public void setJustificativaColaborador(String j) { this.justificativaColaborador = j; }
 }

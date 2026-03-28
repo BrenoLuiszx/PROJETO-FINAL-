@@ -28,22 +28,11 @@ const Registro = () => {
 
     try {
       const { confirmarSenha, ...dadosUsuario } = form;
-      console.log(' Enviando dados:', dadosUsuario);
-      console.log(' URL da API:', 'http://localhost:8080/api/usuarios/registrar');
-      
-      const response = await usuarioAPI.registrar(dadosUsuario);
-      console.log(' Resposta recebida:', response);
-      
+      await usuarioAPI.registrar(dadosUsuario);
       setMensagem('Usuário cadastrado com sucesso! Redirecionando para login...');
       setForm({ nome: '', email: '', senha: '', confirmarSenha: '', foto: '' });
-      
-      // Redirecionar para login após 2 segundos
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
-      console.error(' Erro na requisição:', error);
-      console.error(' Detalhes do erro:', error.response);
       const errorMsg = error.response?.data?.error || 'Erro ao cadastrar usuário';
       setMensagem(errorMsg);
     } finally {

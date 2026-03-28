@@ -39,8 +39,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF18181B),
-        title: Text(
+        backgroundColor: const Color(0xFF18181B),
+        title: const Text(
           'Editar Foto do Perfil',
           style: TextStyle(color: Colors.white),
         ),
@@ -49,23 +49,23 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           children: [
             TextField(
               controller: urlController,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Cole a URL da imagem aqui',
-                hintStyle: TextStyle(color: Color(0xFF6B7280)),
+                hintStyle: const TextStyle(color: Color(0xFF6B7280)),
                 filled: true,
-                fillColor: Color(0xFF27272A),
+                fillColor: const Color(0xFF27272A),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Color(0xFF374151)),
+                  borderSide: const BorderSide(color: Color(0xFF374151)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Color(0xFF374151)),
+                  borderSide: const BorderSide(color: Color(0xFF374151)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Color(0xFFFACC15)),
+                  borderSide: const BorderSide(color: Color(0xFFFACC15)),
                 ),
               ),
             ),
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar', style: TextStyle(color: Color(0xFF9CA3AF))),
+            child: const Text('Cancelar', style: TextStyle(color: Color(0xFF9CA3AF))),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   await userProvider.updateUserPhoto(urlController.text);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Foto atualizada com sucesso!')),
+                    const SnackBar(content: Text('Foto atualizada com sucesso!')),
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -93,10 +93,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFFACC15),
+              backgroundColor: const Color(0xFFFACC15),
               foregroundColor: Colors.black,
             ),
-            child: Text('Salvar'),
+            child: const Text('Salvar'),
           ),
         ],
       ),
@@ -282,10 +282,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                                     height: 80,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Color(0xFFFACC15),
+                                      color: const Color(0xFFFACC15),
                                       image: hasPhoto
                                           ? DecorationImage(
-                                              image: NetworkImage(user!.foto!),
+                                              image: NetworkImage(user.foto!),
                                               fit: BoxFit.cover,
                                             )
                                           : null,
@@ -294,7 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                                         ? Center(
                                             child: Text(
                                               initials.toUpperCase(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.w600,
@@ -343,24 +343,24 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                                           children: [
                                             Text(
                                               user?.nome ?? 'Estudante',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
-                                            SizedBox(height: 4),
+                                            const SizedBox(height: 4),
                                             Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.email,
                                                   color: Color(0xFF9CA3AF),
                                                   size: 12,
                                                 ),
-                                                SizedBox(width: 4),
+                                                const SizedBox(width: 4),
                                                 Text(
                                                   user?.email ?? 'estudante@learnly.com',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xFF9CA3AF),
                                                     fontSize: 14,
                                                   ),
@@ -468,7 +468,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                             ),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Column(

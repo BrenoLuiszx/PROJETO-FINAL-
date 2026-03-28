@@ -1,78 +1,117 @@
-    package com.learnly.api.controller;
+package com.learnly.api.controller;
 
-    import com.learnly.api.dto.CursoDTO;
+import com.learnly.api.dto.CursoDTO;
 import com.learnly.api.dto.CursoDetalhadoDTO;
 import com.learnly.api.model.service.CursoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.*;
-    import java.util.List;
-    import java.util.Map;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-    @RestController
-    @RequestMapping("/api/cursos")
-    public class CursoController {
+import java.util.List;
+import java.util.Map;
 
-        @Autowired
-        private CursoService cursoService;
+@RestController
+@RequestMapping("/api/cursos")
+public class CursoController {
 
-        @GetMapping
-        public ResponseEntity<List<CursoDTO>> listarCursos() {
-            List<CursoDTO> cursos = cursoService.listarTodos();
-            return ResponseEntity.ok(cursos);
-        }
+    @Autowired
+    private CursoService cursoService;
 
-        @PostMapping
-        public ResponseEntity<CursoDTO> criarCurso(@RequestBody CursoDTO cursoDTO) {
-            try {
-                CursoDTO curso = cursoService.criar(cursoDTO);
-                return ResponseEntity.ok(curso);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
+    // Listagem pública - apenas aprovados
+    @GetMapping
+    public ResponseEntity<List<CursoDTO>> listarCursos() {
+        return ResponseEntity.ok(cursoService.listarTodos());
+    }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<CursoDTO> atualizarCurso(@PathVariable Long id, @RequestBody CursoDTO cursoDTO) {
-            try {
-                CursoDTO curso = cursoService.atualizar(id, cursoDTO);
-                return ResponseEntity.ok(curso);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
+    // Admin - lista cursos pendentes de aprovação
+    @GetMapping("/pendentes")
+    public ResponseEntity<List<CursoDTO>> listarPendentes() {
+        return ResponseEntity.ok(cursoService.listarPendentes());
+    }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Map<String, String>> deletarCurso(@PathVariable Long id) {
-            try {
-                cursoService.deletar(id);
-                return ResponseEntity.ok(Map.of("message", "Curso deletado com sucesso"));
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest()
-                        .body(Map.of("error", "Curso não encontrado"));
-            }
-        }
+    // Colaborador - lista seus próprios cursos
+    @GetMapping("/meus")
+    public ResponseEntity<List<CursoDTO>> meusCursos(Authentication auth) {
+        Long criadorId = (Long) auth.getCredentials();
+        return ResponseEntity.ok(cursoService.listarPorCriador(criadorId));
+    }
 
-        @GetMapping("/categoria/{categoria}")
-        public ResponseEntity<List<CursoDTO>> buscarPorCategoria(@PathVariable String categoria) {
-            List<CursoDTO> cursos = cursoService.buscarPorCategoria(categoria);
-            return ResponseEntity.ok(cursos);
-        }
-
-        @GetMapping("/buscar")
-        public ResponseEntity<List<CursoDTO>> buscarPorTitulo(@RequestParam(required = false) String titulo) {
-            List<CursoDTO> cursos = cursoService.buscarPorTitulo(titulo);
-            return ResponseEntity.ok(cursos);
-        }
-
-        @GetMapping("/{id}")
-        public ResponseEntity<CursoDetalhadoDTO> buscarPorId(@PathVariable Long id) {
-            try {
-                CursoDetalhadoDTO curso = cursoService.buscarDetalhadoPorId(id);
-                return ResponseEntity.ok(curso);
-            } catch (RuntimeException e) {
-                return ResponseEntity.notFound().build();
-            }
+    // Criar curso - admin aprova direto, colaborador fica pendente
+    @PostMapping
+    public ResponseEntity<CursoDTO> criarCurso(@RequestBody CursoDTO cursoDTO, Authentication auth) {
+        try {
+            Long criadorId = (Long) auth.getCredentials();
+            String role = auth.getAuthorities().iterator().next()
+                    .getAuthority().replace("ROLE_", "").toLowerCase();
+            return ResponseEntity.ok(cursoService.criar(cursoDTO, criadorId, role));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
+
+    // Atualizar curso
+    @PutMapping("/{id}")
+    public ResponseEntity<CursoDTO> atualizarCurso(@PathVariable Long id,
+                                                    @RequestBody CursoDTO cursoDTO,
+                                                    Authentication auth) {
+        try {
+            Long criadorId = (Long) auth.getCredentials();
+            String role = auth.getAuthorities().iterator().next()
+                    .getAuthority().replace("ROLE_", "").toLowerCase();
+            return ResponseEntity.ok(cursoService.atualizar(id, cursoDTO, criadorId, role));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Admin - aprovar curso
+    @PutMapping("/{id}/aprovar")
+    public ResponseEntity<CursoDTO> aprovarCurso(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(cursoService.aprovarCurso(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Admin - rejeitar curso
+    @PutMapping("/{id}/rejeitar")
+    public ResponseEntity<CursoDTO> rejeitarCurso(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(cursoService.rejeitarCurso(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deletarCurso(@PathVariable Long id) {
+        try {
+            cursoService.deletar(id);
+            return ResponseEntity.ok(Map.of("message", "Curso deletado com sucesso"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Curso não encontrado"));
+        }
+    }
+
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<CursoDTO>> buscarPorCategoria(@PathVariable String categoria) {
+        return ResponseEntity.ok(cursoService.buscarPorCategoria(categoria));
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<CursoDTO>> buscarPorTitulo(@RequestParam(required = false) String titulo) {
+        return ResponseEntity.ok(cursoService.buscarPorTitulo(titulo));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CursoDetalhadoDTO> buscarPorId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(cursoService.buscarDetalhadoPorId(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}

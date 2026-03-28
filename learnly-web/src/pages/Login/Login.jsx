@@ -25,12 +25,13 @@ const Login = () => {
       
       setMensagem('Login realizado com sucesso!');
       
-      // Fazer login no contexto
-      login(response.data.usuario);
+      login(response.data.usuario, response.data.token);
       
-      // Redirecionar para home
+      // Redirecionar baseado na role
+      const role = response.data.usuario?.role;
       setTimeout(() => {
-        navigate('/');
+        if (role === 'admin') navigate('/admin');
+        else navigate('/');
       }, 1000);
       
     } catch (error) {

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { usuarioDashboardAPI } from '../../services/api';
 import Header from '../Header/Header';
 import '../../styles/configuracoes.css';
 
@@ -7,6 +8,15 @@ const Configuracoes = () => {
   const { usuario } = useAuth();
   const [theme, setTheme] = useState('dark');
   const [profilePhoto, setProfilePhoto] = useState(usuario?.foto || '');
+  const [stats, setStats] = useState({ cursosAcessados: 0, concluidos: 0, totalMinutos: 0 });
+
+  useEffect(() => {
+    if (usuario) {
+      usuarioDashboardAPI.dashboard()
+        .then(res => setStats(res.data))
+        .catch(() => {});
+    }
+  }, [usuario]);
 
   return (
     <div className="configuracoes-page">
@@ -108,7 +118,7 @@ const Configuracoes = () => {
                   </svg>
                 </div>
                 <div className="stat-info">
-                  <span className="stat-number">0</span>
+                  <span className="stat-number">{stats.cursosAcessados || 0}</span>
                   <span className="stat-label">Cursos Acessados</span>
                 </div>
               </div>
@@ -119,7 +129,7 @@ const Configuracoes = () => {
                   </svg>
                 </div>
                 <div className="stat-info">
-                  <span className="stat-number">0</span>
+                  <span className="stat-number">{stats.concluidos || 0}</span>
                   <span className="stat-label">Concluídos</span>
                 </div>
               </div>
@@ -130,7 +140,7 @@ const Configuracoes = () => {
                   </svg>
                 </div>
                 <div className="stat-info">
-                  <span className="stat-number">0h</span>
+                  <span className="stat-number">{Math.floor((stats.totalMinutos || 0) / 60)}h</span>
                   <span className="stat-label">Tempo Total</span>
                 </div>
               </div>

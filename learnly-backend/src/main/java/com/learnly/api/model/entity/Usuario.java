@@ -23,15 +23,22 @@ public class Usuario {
     @Column(length = 500)
     private String foto;
     
+    // Roles: admin, colaborador, user
     @Column(nullable = false, length = 20)
     private String role = "user";
-    
+
+    // Status da solicitação de colaborador: nenhuma, pendente, aprovada, recusada
+    @Column(name = "status_solicitacao", length = 20)
+    private String statusSolicitacao = "nenhuma";
+
+    @Column(name = "justificativa_colaborador", length = 500)
+    private String justificativaColaborador;
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao = LocalDateTime.now();
     
     private Boolean ativo = true;
 
-    // Construtores
     public Usuario() {}
 
     public Usuario(String nome, String email, String senha, String foto, String role) {
@@ -42,7 +49,6 @@ public class Usuario {
         this.role = role;
     }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -60,6 +66,12 @@ public class Usuario {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getStatusSolicitacao() { return statusSolicitacao; }
+    public void setStatusSolicitacao(String statusSolicitacao) { this.statusSolicitacao = statusSolicitacao; }
+
+    public String getJustificativaColaborador() { return justificativaColaborador; }
+    public void setJustificativaColaborador(String justificativaColaborador) { this.justificativaColaborador = justificativaColaborador; }
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }

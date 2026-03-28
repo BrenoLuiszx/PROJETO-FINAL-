@@ -30,13 +30,34 @@ public class Curso {
     
     @Column(nullable = false)
     private Integer duracao;
-    
+
+    // Status do curso: pendente, aprovado, rejeitado
+    @Column(nullable = false, length = 20)
+    private String status = "aprovado";
+
+    // ID do usuário que criou (null = criado pelo admin)
+    @Column(name = "criador_id")
+    private Long criadorId;
+
+    @Column(length = 500)
+    private String imagem;
+
+    @Column(name = "descricao_detalhada", columnDefinition = "NVARCHAR(MAX)")
+    private String descricaoDetalhada;
+
+    // JSON string: [{"titulo":"...","url":"..."}]
+    @Column(name = "links_externos", columnDefinition = "NVARCHAR(MAX)")
+    private String linksExternos;
+
+    // JSON string: [{"nome":"...","url":"..."}]
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String anexos;
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao = LocalDateTime.now();
     
     private Boolean ativo = true;
 
-    // Construtores
     public Curso() {}
 
     public Curso(String titulo, String descricao, String url, Categoria categoria, Instrutor instrutor, Integer duracao) {
@@ -48,7 +69,6 @@ public class Curso {
         this.duracao = duracao;
     }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -69,6 +89,24 @@ public class Curso {
 
     public Integer getDuracao() { return duracao; }
     public void setDuracao(Integer duracao) { this.duracao = duracao; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Long getCriadorId() { return criadorId; }
+    public void setCriadorId(Long criadorId) { this.criadorId = criadorId; }
+
+    public String getImagem() { return imagem; }
+    public void setImagem(String imagem) { this.imagem = imagem; }
+
+    public String getDescricaoDetalhada() { return descricaoDetalhada; }
+    public void setDescricaoDetalhada(String descricaoDetalhada) { this.descricaoDetalhada = descricaoDetalhada; }
+
+    public String getLinksExternos() { return linksExternos; }
+    public void setLinksExternos(String linksExternos) { this.linksExternos = linksExternos; }
+
+    public String getAnexos() { return anexos; }
+    public void setAnexos(String anexos) { this.anexos = anexos; }
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }

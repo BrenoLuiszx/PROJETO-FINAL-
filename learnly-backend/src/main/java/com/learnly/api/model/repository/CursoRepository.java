@@ -11,17 +11,27 @@ import java.util.List;
 
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Long> {
-    
-    @Query("SELECT c FROM Curso c WHERE c.categoria.nome = :categoria AND c.ativo = true")
+
+    // Apenas cursos aprovados e ativos (visíveis ao público)
+    @Query("SELECT c FROM Curso c WHERE c.categoria.nome = :categoria AND c.ativo = true AND c.status = 'aprovado'")
     List<Curso> findByCategoriaNome(@Param("categoria") String categoria);
-    
+
     @Query("SELECT c FROM Curso c WHERE " +
            "(LOWER(c.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(c.descricao) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(c.instrutor.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(c.categoria.nome) LIKE LOWER(CONCAT('%', :termo, '%'))) " +
-           "AND c.ativo = true")
+           "AND c.ativo = true AND c.status = 'aprovado'")
     List<Curso> buscarPorTermo(@Param("termo") String termo);
-    
-    List<Curso> findByAtivoTrue();
+
+    // Apenas aprovados para listagem pública
+    List<Curso> findByAtivoTrueAndStatus(String status);
+
+    long countByAtivoTrueAndStatus(String status);
+
+    // Cursos pendentes de aprovação (admin)
+    List<Curso> findByStatus(String status);
+
+    // Cursos de um colaborador específico
+    List<Curso> findByCriadorId(Long criadorId);
 }

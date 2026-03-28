@@ -17,7 +17,7 @@ const Cursos = () => {
     {
       titulo: "Jornada Backend",
       descricao: "Domine o desenvolvimento backend com tecnologias modernas",
-      icon: "🚀",
+      icon: "BE",
       cursos: ["Java Fundamentos", "Spring Boot API", "MySQL Básico"],
       duracao: "24h",
       nivel: "Intermediário"
@@ -25,7 +25,7 @@ const Cursos = () => {
     {
       titulo: "Jornada Frontend",
       descricao: "Crie interfaces modernas e responsivas",
-      icon: "🎨",
+      icon: "FE",
       cursos: ["JavaScript ES6+", "React Completo", "CSS Grid e Flexbox"],
       duracao: "20h",
       nivel: "Iniciante"
@@ -33,7 +33,7 @@ const Cursos = () => {
     {
       titulo: "Jornada DevOps",
       descricao: "Automatize e otimize o ciclo de desenvolvimento",
-      icon: "⚙️",
+      icon: "DO",
       cursos: ["Git e GitHub", "Docker Essentials", "CI/CD Pipeline"],
       duracao: "16h",
       nivel: "Avançado"
@@ -41,7 +41,7 @@ const Cursos = () => {
     {
       titulo: "Jornada Data Science",
       descricao: "Analise dados e crie modelos de machine learning",
-      icon: "📊",
+      icon: "DS",
       cursos: ["Python Fundamentos", "Pandas & NumPy", "Machine Learning"],
       duracao: "32h",
       nivel: "Intermediário"
@@ -49,7 +49,7 @@ const Cursos = () => {
     {
       titulo: "Jornada Cybersecurity",
       descricao: "Proteja sistemas e dados contra ameaças digitais",
-      icon: "🔒",
+      icon: "CS",
       cursos: ["Fundamentos de Segurança", "Ethical Hacking", "Análise de Vulnerabilidades"],
       duracao: "28h",
       nivel: "Avançado"
@@ -57,14 +57,12 @@ const Cursos = () => {
     {
       titulo: "Jornada Mobile",
       descricao: "Desenvolva aplicativos para iOS e Android",
-      icon: "📱",
+      icon: "MB",
       cursos: ["React Native", "Flutter Básico", "APIs Mobile"],
       duracao: "22h",
       nivel: "Intermediário"
     }
   ];
-
-  console.log('Jornadas carregadas:', jornadas.length);
 
   useEffect(() => {
     carregarCursos();
@@ -76,9 +74,6 @@ const Cursos = () => {
       setCursos(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Erro ao carregar cursos:", error);
-      alert(
-        "Erro de rede ao carregar cursos. Verifique se o servidor está rodando na porta 8080."
-      );
       setCursos([]);
     } finally {
       setLoading(false);
@@ -96,9 +91,6 @@ const Cursos = () => {
       setCursos(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Erro ao buscar cursos:", error);
-      alert(
-        "Erro de rede ao buscar cursos. Verifique se o servidor está rodando."
-      );
       setCursos([]);
     } finally {
       setLoading(false);
@@ -120,9 +112,6 @@ const Cursos = () => {
       setCursos(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Erro ao filtrar cursos:", error);
-      alert(
-        "Erro de rede ao filtrar cursos. Verifique se o servidor está rodando."
-      );
       setCursos([]);
     } finally {
       setLoading(false);
@@ -287,12 +276,12 @@ const Cursos = () => {
                 </div>
 
                 <div className="course-actions">
-                  <a
-                    href={`/curso/${curso.id}`}
+                  <button
                     className="btn-watch"
+                    onClick={() => navigate(`/curso/${curso.id}`)}
                   >
                     Ver Curso
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}
@@ -325,7 +314,6 @@ const Cursos = () => {
                   className="btn-jornada"
                   onClick={() => {
                     const slug = jornada.titulo.toLowerCase().replace(/\s+/g, '-');
-                    console.log('Navegando para:', `/jornada/${slug}`);
                     navigate(`/jornada/${slug}`);
                   }}
                 >

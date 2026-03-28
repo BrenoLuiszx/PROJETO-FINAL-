@@ -4,89 +4,68 @@ const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider');
-  }
+  if (!context) throw new Error('useAuth deve ser usado dentro de AuthProvider');
   return context;
 };
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     try {
       const usuarioSalvo = localStorage.getItem('usuario');
-      if (usuarioSalvo) {
-        const dadosUsuario = JSON.parse(usuarioSalvo);
-        
-        // Verificar se tem as propriedades necessárias
-        if (dadosUsuario && dadosUsuario.id && dadosUsuario.nome) {
-          setUsuario(dadosUsuario);
-        } else {
-          localStorage.removeItem('usuario');
-        }
+      const tokenSalvo = localStorage.getItem('token');
+      if (usuarioSalvo && tokenSalvo) {
+        setUsuario(JSON.parse(usuarioSalvo));
+        setToken(tokenSalvo);
       }
-    } catch (error) {
+    } catch {
       localStorage.removeItem('usuario');
+      localStorage.removeItem('token');
     }
     setLoading(false);
   }, []);
 
-  const login = (dadosUsuario) => {
+  const login = (dadosUsuario, jwtToken) => {
     setUsuario(dadosUsuario);
+    setToken(jwtToken);
     localStorage.setItem('usuario', JSON.stringify(dadosUsuario));
+    localStorage.setItem('token', jwtToken);
   };
 
   const logout = () => {
     setUsuario(null);
+    setToken(null);
     localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
   };
 
-  const syncUserData = async () => {
-    if (usuario && usuario.email) {
-      try {
-        const response = await fetch('http://localhost:8080/api/usuarios');
-        const data = await response.json();
-        const updatedUser = data.usuarios.find(u => u.email === usuario.email);
-        if (updatedUser) {
-          setUsuario(updatedUser);
-          localStorage.setItem('usuario', JSON.stringify(updatedUser));
-        }
-      } catch (error) {
-        console.error('Erro ao sincronizar dados do usuário:', error);
-      }
-    }
-  };
+  // Helpers de role
+  const isAdmin = () => usuario?.role === 'admin';
+  const isColaborador = () => usuario?.role === 'colaborador';
+  const isUser = () => usuario?.role === 'user';
 
   const value = {
     usuario,
+    token,
     login,
     logout,
-    syncUserData,
-    isAuthenticated: !!usuario
+    isAdmin,
+    isColaborador,
+    isUser,
+    isAuthenticated: !!usuario,
+    syncUserData: () => {},
   };
-  
-
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        background: '#fff',
-        color: '#333'
-      }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#000', color: '#FFD700' }}>
         Carregando...
       </div>
     );
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

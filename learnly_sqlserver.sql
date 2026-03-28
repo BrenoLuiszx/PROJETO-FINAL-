@@ -84,6 +84,57 @@ CREATE TABLE Inscricoes (
     CONSTRAINT CK_Inscricao_Progresso CHECK (progresso >= 0 AND progresso <= 100)
 );
 
+
+
+-- Progresso do usuário por curso
+CREATE TABLE Progresso (
+  id INT IDENTITY PRIMARY KEY,
+  usuario_id INT NOT NULL REFERENCES Usuarios(id),
+  curso_id INT NOT NULL REFERENCES Cursos(id),
+  concluido BIT DEFAULT 0,
+  data_conclusao DATETIME2 NULL,
+  UNIQUE(usuario_id, curso_id)
+);
+
+-- Avaliações de cursos
+CREATE TABLE Avaliacoes (
+  id INT IDENTITY PRIMARY KEY,
+  usuario_id INT NOT NULL REFERENCES Usuarios(id),
+  curso_id INT NOT NULL REFERENCES Cursos(id),
+  nota INT CHECK (nota BETWEEN 1 AND 5),
+  comentario NVARCHAR(500),
+  data_criacao DATETIME2 DEFAULT GETDATE(),
+  UNIQUE(usuario_id, curso_id)
+);
+
+CREATE TABLE Certificados (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    nome_usuario NVARCHAR(100) NULL,
+    titulo_curso NVARCHAR(200) NULL,
+    url_certificado NVARCHAR(500) NULL,
+    data_emissao DATETIME2 DEFAULT GETDATE(),
+    publico BIT DEFAULT 1,
+    CONSTRAINT FK_Certificado_Usuario FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    CONSTRAINT FK_Certificado_Curso FOREIGN KEY (curso_id) REFERENCES Cursos(id),
+    CONSTRAINT UK_Certificado UNIQUE (usuario_id, curso_id)
+);
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Avaliacoes') AND name = 'nome_usuario')
+    ALTER TABLE Avaliacoes ADD nome_usuario NVARCHAR(100) NULL;
+GO
+
+SELECT 'Certificados criados com sucesso!' AS status;
+
+-- Colunas extras nos cursos
+ALTER TABLE Cursos ADD imagem NVARCHAR(500) NULL;
+ALTER TABLE Cursos ADD descricao_detalhada NVARCHAR(MAX) NULL;
+ALTER TABLE Cursos ADD links_externos NVARCHAR(MAX) NULL; -- JSON
+ALTER TABLE Cursos ADD anexos NVARCHAR(MAX) NULL;         -- JSON
+
+
 -- =============================================
 -- INSERIR DADOS INICIAIS
 -- =============================================
@@ -223,4 +274,148 @@ FROM Cursos c
 LEFT JOIN Inscricoes i ON c.id = i.curso_id
 GROUP BY c.id, c.titulo
 ORDER BY total_inscricoes DESC;
+
+
+
+UPDATE Usuarios
+SET senha = '$2a$10$Ba1rMXrknmeN15NeaLkVn.HcVQ5s0lU9O1.o5acO6I.WYzxtjQhMu'
+WHERE email IN ('admin@teste.com', 'user@teste.com', 'joao@email.com', 'maria@email.com');
+
+
+SELECT email, LEN(senha) as tamanho, senha FROM Usuarios WHERE email = 'admin@teste.com';
+
+SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'Usuarios' AND COLUMN_NAME = 'senha';
+
+SELECT email, DATALENGTH(senha) as bytes, senha FROM Usuarios WHERE email = 'admin@teste.com';
+
+ALTER TABLE Usuarios
+ADD justificativa_colaborador NVARCHAR(500) NULL;
+
+
+
+
+
+UPDATE c SET c.url = a.url
+FROM Cursos c
+INNER JOIN Aulas a ON c.id = a.curso_id
+WHERE a.ordem = 1;
+
+
+CREATE TABLE ProgressoAula (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    aula_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    concluido BIT DEFAULT 0,
+    data_conclusao DATETIME2 NULL,
+    CONSTRAINT FK_ProgressoAula_Usuario FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    CONSTRAINT FK_ProgressoAula_Aula FOREIGN KEY (aula_id) REFERENCES Aulas(id) ON DELETE CASCADE,
+    CONSTRAINT UK_ProgressoAula UNIQUE (usuario_id, aula_id)
+);
+GO
+
+
+CREATE TABLE Certificados (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    nome_usuario NVARCHAR(100) NULL,
+    titulo_curso NVARCHAR(200) NULL,
+    url_certificado NVARCHAR(500) NULL,
+    data_emissao DATETIME2 DEFAULT GETDATE(),
+    publico BIT DEFAULT 1,
+    CONSTRAINT FK_Certificado_Usuario FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    CONSTRAINT FK_Certificado_Curso FOREIGN KEY (curso_id) REFERENCES Cursos(id),
+    CONSTRAINT UK_Certificado UNIQUE (usuario_id, curso_id)
+);
+GO
+
+
+CREATE TABLE Aulas (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    curso_id INT NOT NULL,
+    ordem INT NOT NULL,
+    titulo NVARCHAR(200) NOT NULL,
+    url NVARCHAR(500) NOT NULL,
+    descricao NVARCHAR(1000) NULL,
+    CONSTRAINT FK_Aula_Curso FOREIGN KEY (curso_id) REFERENCES Cursos(id) ON DELETE CASCADE
+);
+GO
+
+-- Criar tabela ProgressoAula
+CREATE TABLE ProgressoAula (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    aula_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    concluido BIT DEFAULT 0,
+    data_conclusao DATETIME2 NULL,
+    CONSTRAINT FK_ProgressoAula_Usuario FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    CONSTRAINT FK_ProgressoAula_Aula FOREIGN KEY (aula_id) REFERENCES Aulas(id) ON DELETE CASCADE,
+    CONSTRAINT UK_ProgressoAula UNIQUE (usuario_id, aula_id)
+);
+GO
+
+-- Criar índices para melhor performance
+CREATE INDEX IX_Aulas_CursoId ON Aulas(curso_id);
+CREATE INDEX IX_Aulas_Ordem ON Aulas(curso_id, ordem);
+CREATE INDEX IX_ProgressoAula_Usuario ON ProgressoAula(usuario_id);
+CREATE INDEX IX_ProgressoAula_Curso ON ProgressoAula(curso_id);
+GO
+
+
+INSERT INTO Aulas (curso_id, ordem, titulo, url, descricao)
+SELECT 
+    c.id,
+    1,
+    'Aula 1 - ' + c.titulo,
+    c.url,
+    'Aula principal do curso'
+FROM Cursos c
+WHERE NOT EXISTS (
+    SELECT 1 FROM Aulas a WHERE a.curso_id = c.id
+);
+
+PRINT '✓ Aulas criadas: ' + CAST(@@ROWCOUNT AS VARCHAR);
+GO
+
+-- Verificar resultado
+SELECT 
+    c.id,
+    c.titulo AS curso,
+    a.id AS aula_id,
+    a.titulo AS aula,
+    a.url
+FROM Cursos c
+LEFT JOIN Aulas a ON a.curso_id = c.id
+ORDER BY c.id, a.ordem;
+GO
+
+
+DROP TABLE IF EXISTS ProgressoAula;
+
+DROP TABLE IF EXISTS ProgressoAula;
+
+DROP TABLE IF EXISTS ProgressoAula;
+
+CREATE TABLE progresso_aula (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    aula_id INT NOT NULL,
+    curso_id INT NOT NULL,
+    concluido BIT NOT NULL DEFAULT 0,
+    data_conclusao DATETIME2,
+    CONSTRAINT UQ_usuario_aula UNIQUE (usuario_id, aula_id),
+    CONSTRAINT FK_progresso_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    CONSTRAINT FK_progresso_aula FOREIGN KEY (aula_id) REFERENCES Aulas(id) ON DELETE CASCADE,
+    CONSTRAINT FK_progresso_curso FOREIGN KEY (curso_id) REFERENCES cursos(id)
+);
+
+CREATE INDEX idx_progresso_usuario ON progresso_aula(usuario_id);
+CREATE INDEX idx_progresso_curso ON progresso_aula(curso_id);
+
+
+
 

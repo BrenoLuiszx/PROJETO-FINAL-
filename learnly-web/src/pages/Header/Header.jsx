@@ -24,6 +24,11 @@ const Header = () => {
             <li>
               <Link to="/cursos">Cursos</Link>
             </li>
+            {isAuthenticated && usuario?.role === 'colaborador' && (
+              <li>
+                <Link to="/colaborador">Cadastrar Curso</Link>
+              </li>
+            )}
             {isAuthenticated && usuario?.role === 'admin' && (
               <>
                 <li>
